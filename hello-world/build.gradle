@@ -29,7 +29,8 @@ dependencies {
     annotationProcessor "io.micronaut:micronaut-validation:$micronautVersion"
 
     compileOnly "io.micronaut:micronaut-inject-java:$micronautVersion"
-    
+    runtimeOnly "ch.qos.logback:logback-classic:$logbackVersion"
+
     // This dependency is found on compile classpath of this component and consumers.
     implementation "io.micronaut:micronaut-validation:$micronautVersion"
     implementation "io.micronaut.configuration:micronaut-hibernate-validator:$micronautVersion"
@@ -45,7 +46,7 @@ dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
 }
 
-run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dmicronaut.cloud.platform=OTHER')
 
 // Define the main class for the application
 mainClassName = "hello.world.App"
@@ -67,4 +68,13 @@ test {
     }
     
     systemProperty "micronaut.cloud.platform", "OTHER"
+}
+
+apply plugin: 'idea'
+
+idea {
+    module {
+        outputDir file('build/classes/java/main')
+        testOutputDir file('build/classes/java/test')
+    }
 }

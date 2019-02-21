@@ -8,6 +8,7 @@ import io.micronaut.runtime.Micronaut;
 public class App {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
+
         Micronaut.run(App.class);
 
         long end = System.currentTimeMillis();
