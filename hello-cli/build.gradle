@@ -1,0 +1,66 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id "com.github.johnrengelman.shadow" version "4.0.2"
+    id "net.ltgt.apt-eclipse" version "0.18"
+    id "net.ltgt.apt-idea" version "0.18"
+}
+
+apply plugin:"application"
+apply plugin:"java"
+
+version "0.1"
+group "hello.cli"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com" }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'io.micronaut:micronaut-bom:1.0.4'
+    }
+}
+
+dependencies {
+    annotationProcessor "io.micronaut:micronaut-inject-java"
+    implementation "info.picocli:picocli"
+    implementation ("io.micronaut.configuration:micronaut-picocli") {
+        exclude group: "io.micronaut", module: "micronaut-runtime"
+    }
+    implementation "io.micronaut:micronaut-inject"
+    compileOnly "io.micronaut:micronaut-inject-java"
+    runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
+    testImplementation "io.micronaut:micronaut-inject-java"
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.hamcrest:hamcrest-all:1.3"
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dmicronaut.cloud.platform=OTHER')
+mainClassName = "hello.cli.HelloCliCommand"
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+
+tasks.withType(JavaCompile){
+    options.encoding = "UTF-8"
+    options.compilerArgs.add('-parameters')
+}
+
+apply plugin: 'idea'
+
+idea {
+    module {
+        outputDir file('build/classes/java/main')
+        testOutputDir file('build/classes/java/test')
+    }
+}
